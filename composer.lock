@@ -1,0 +1,48 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
+    ],
+    "hash": "405a5c6fd4c75def9dacc0c2fae69a88",
+    "packages": [
+        {
+            "name": "atk4/atk4",
+            "version": "4.3.x-dev",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/atk4/atk4.git",
+                "reference": "origin/4.3"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "http://agiletoolkit.org/distfiles/agiletoolkit-4.2.4.zip",
+                "reference": null,
+                "shasum": null
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "": "lib/"
+                },
+                "files": [
+                    "/lib/static.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "homepage": "https://agiletoolkit.org/",
+            "keywords": [
+                "atk4",
+                "framework"
+            ],
+            "time": "2013-12-13 13:13:44"
+        }
+    ],
+    "packages-dev": [],
+    "aliases": [],
+    "minimum-stability": "stable",
+    "stability-flags": {
+        "atk4/atk4": 20
+    },
+    "platform": [],
+    "platform-dev": []
+}
