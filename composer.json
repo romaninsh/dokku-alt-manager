@@ -1,0 +1,20 @@
+{
+    "autoload": {
+        "psr-0": {
+            "": [
+                "lib/",
+                "apitest/lib/"
+                ]
+        }
+    },
+    "require": {
+        "atk4/atk4": "4.3.*@dev"
+    },
+    "extra": {
+      "heroku": {
+        "document-root": "admin/public",
+        "index-document": "index.php",
+        "php-config": [ "display_errors=on" ]
+      }
+    }
+}
