@@ -4,6 +4,8 @@ $config['url_postfix']='';
 
 $config['js']['versions']['jqueryui']='1.11.master';
 
+$config['dsn']='mysql://root:root@localhost/dam';
+
 // rvadym/language
 $config['rvadym']['languages']  = array(
     'languages'            => array('en','ru'),

@@ -12,14 +12,10 @@ class Admin extends App_Admin {
             ->setBasePath($this->pathfinder->base_location->getPath() . '/..')
         ;
 
-        $this->api->menu->addMenuItem('/', 'Home');
+        $this->dbConnect();
+
+        $this->api->menu->addItem(['Dashboard', 'icon'=>'home'], '/');
+
+        $this->add('dokku_alt/Initiator');
     }
 }
-
-
-
-        // For improved compatibility with Older Toolkit. See Documentation.
-        // $this->add('Controller_Compat42')
-        //     ->useOldTemplateTags()
-        //     ->useOldStyle()
-        //     ->useSMLite();

@@ -8,7 +8,10 @@
         }
     },
     "require": {
-        "atk4/atk4": "4.3.*@dev"
+        "atk4/atk4": "4.3.*@dev",
+        "educoder/pest":"1.0.0",
+        "phpseclib/phpseclib": "0.3.*@dev"
+
     },
     "extra": {
       "heroku": {
