@@ -4,7 +4,7 @@ doc/dbupdates/*.fail
 *.bak
 upload/*
 .DS_Store
-config.php
+/config.php
 config-auto.php
 composer.phar
 /vendor/*
