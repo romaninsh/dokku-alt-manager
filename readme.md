@@ -20,6 +20,10 @@ Install
     git remote add deploy git://$HOST:dam
     git push deploy master
 
+Troubleshooting
+----------------
+
+    ssh dokku@$HOST logs dam -t
 
 Features
 --------
@@ -30,6 +34,8 @@ Features
 Planned Features
 ----------------
 
+ - Password-protect the app
+ - Passkey support for private key
  - Fetch all apps from host
  - Edit app config
  - Create and link apps with databases
