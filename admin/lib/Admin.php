@@ -12,6 +12,8 @@ class Admin extends App_Admin {
             ->setBasePath($this->pathfinder->base_location->getPath() . '/..')
         ;
 
+        $this->template['css']='compact.css';
+
         $this->dbConnect();
 
         $this->api->menu->addItem(['Dashboard', 'icon'=>'home'], '/');

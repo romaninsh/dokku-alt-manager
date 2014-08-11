@@ -15,6 +15,11 @@ class Model_App extends  \SQL_Model {
         $this->addHook('beforeSave',$this);
         //$this->addHook('afterSave',$this);
 //        $this->addHook('afterInsert',$this);
+
+
+        $this->hasMany('dokku_alt/Config',null,null,'Config');
+        $this->hasMany('dokku_alt/Domain',null,null,'Domain');
+        $this->hasMany('dokku_alt/DB_Link',null,null,'DB_Link');
     }
 
     function beforeSave(){

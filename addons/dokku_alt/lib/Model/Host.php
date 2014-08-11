@@ -10,6 +10,12 @@ class Model_Host extends \SQL_Model {
         $this->addField('addr');
         $this->addField('public_key')->type('text');
         $this->addField('private_key')->type('text')->visible(false);
+
+        $this->hasMany('dokku_alt/App',null,null,'App');
+        $this->hasMany('dokku_alt/Host_Log',null,null,'Host_Log');
+        $this->hasMany('dokku_alt/DB',null,null,'DB');
+
+        $this->addField('is_debug')->type('boolean');
     }
     function connect(){
         try {
@@ -32,6 +38,12 @@ class Model_Host extends \SQL_Model {
     }
 
     function executeCommand($command, $args = []) {
+        if($this['is_debug']){
+            $this->ref('Host_Log')
+                ->set('line',$command.' '.join(' ',$args))
+                ->saveAndUnload();
+            return '[debug-logged]';
+        }
         $ssh=$this->connect();
         // must escape
         ///$args = array_map('escapeshellarg',$args);
