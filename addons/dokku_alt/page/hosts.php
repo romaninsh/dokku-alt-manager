@@ -64,6 +64,6 @@ class page_hosts extends Page
         $c1->add('CRUD')->setModel($this->m_app->ref('Domain'));
 
         $c2->add('CRUD')->setModel($this->m_app->ref('Config'));
-        $c2->add('CRUD')->setModel($this->m_app->ref('DB_Link'));
+        //$c2->add('CRUD')->setModel($this->m_app->ref('DB_Link'));
     }
 }
