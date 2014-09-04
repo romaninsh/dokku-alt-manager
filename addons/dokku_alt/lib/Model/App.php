@@ -12,7 +12,9 @@ class Model_App extends  \SQL_Model {
         $this->addField('is_started')->type('boolean');
         $this->addField('is_enabled')->type('boolean')->defaultValue(true);
 
-        $this->addHook('beforeSave',$this);
+        $this->hasOne('dokku_alt/Buildpack','buildpack_url',false,'Buildpack');
+
+        $this->addHook('beforeSave,beforeInsert,afterSave',$this);
         //$this->addHook('afterSave',$this);
 //        $this->addHook('afterInsert',$this);
 
@@ -20,9 +22,11 @@ class Model_App extends  \SQL_Model {
         $this->hasMany('dokku_alt/Config',null,null,'Config');
         $this->hasMany('dokku_alt/Domain',null,null,'Domain');
         $this->hasMany('dokku_alt/DB_Link',null,null,'DB_Link');
+        $this->hasMany('dokku_alt/Access_Deploy',null,null,'Access');
     }
 
     function beforeSave(){
+        if(!$this->id)return;
         if($this->isDirty('is_started')){
             if($this['is_started']){
                 $this->start();
@@ -45,6 +49,12 @@ class Model_App extends  \SQL_Model {
         if(!$this['url']){
             $this['url'] = $this->getURL();
         }
+    }
+    function beforeInsert(){
+        $this->ref('host_id')->executeCommand('create',[$this['name']]);
+    }
+    function afterSave(){
+        $this->ref('Config')->tryLoadBy('name','BUILDPACK_URL')->set(['name'=>'BUILDPACK_URL', 'value'=>$this['buildpack_url'] ]) ->save();
     }
     function discover(){
         $this['is_started']=null;

@@ -1,0 +1,28 @@
+div(id="{$_name}" class="{$class}").atk-row
+    {rows}{row}
+
+    div.atk-col-6.atk-move-left.col.atk-push
+        div.atk-swatch-swamp.atk-box
+
+            .atk-cells.atk-cells-gutter-large
+                .atk-cell
+                    img(src="{public}images/server.png{/}")
+
+                .atk-cell.atk-jackscrew.atk-valign-top
+                    .atk-cells
+                        h3.atk-cell {$name}
+                        h5.atk-cell Addr: {$addr}
+                    | {$labels}
+
+                {cog}
+                .atk-cell.span_3.atk-valign-top
+                    a(href="{$link}").atk-button.atk-swatch-mold.do-cog(data-id="{$id}")
+                        i.icon-cog
+                {/cog}
+
+
+            small
+                i Notes: {$notes}
+
+    {/row}{/rows}
+    {$Content}

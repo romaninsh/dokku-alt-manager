@@ -6,10 +6,12 @@ class Model_Host extends \SQL_Model {
     function init(){
         parent::init();
 
-        $this->addField('name');
-        $this->addField('addr');
+        $this->addField('name')->mandatory(true);
+        $this->addField('addr')->mandatory(true);
         $this->addField('public_key')->type('text');
-        $this->addField('private_key')->type('text')->visible(false);
+        $this->addField('private_key')->type('text')->visible(false)->mandatory(true);
+
+        $this->addField('notes')->type('text');
 
         $this->hasMany('dokku_alt/App',null,null,'App');
         $this->hasMany('dokku_alt/Host_Log',null,null,'Host_Log');
@@ -38,10 +40,10 @@ class Model_Host extends \SQL_Model {
     }
 
     function executeCommand($command, $args = []) {
+        $this->ref('Host_Log')
+            ->set('line',$command.' '.join(' ',$args))
+            ->saveAndUnload();
         if($this['is_debug']){
-            $this->ref('Host_Log')
-                ->set('line',$command.' '.join(' ',$args))
-                ->saveAndUnload();
             return '[debug-logged]';
         }
         $ssh=$this->connect();

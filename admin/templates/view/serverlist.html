@@ -1,0 +1,18 @@
+
+<div id="{$_name}" class="{$class} atk-row">{rows}{row}
+  <div class="atk-col-6 atk-move-left col atk-push">
+    <div class="atk-swatch-swamp atk-box">
+      <div class="atk-cells atk-cells-gutter-large">
+        <div class="atk-cell"><img src="{public}images/server.png{/}"/></div>
+        <div class="atk-cell atk-jackscrew atk-valign-top">
+          <div class="atk-cells">
+            <h3 class="atk-cell">{$name}</h3>
+            <h5 class="atk-cell">Addr: {$addr}</h5>
+          </div>{$labels}
+        </div>{cog}
+        <div class="atk-cell span_3 atk-valign-top"><a href="{$link}" data-id="{$id}" class="atk-button atk-swatch-mold do-cog"><i class="icon-cog"></i></a></div>{/cog}
+      </div><small><i>Notes: {$notes}</i></small>
+    </div>
+  </div>{/row}{/rows}
+  {$Content}
+</div>

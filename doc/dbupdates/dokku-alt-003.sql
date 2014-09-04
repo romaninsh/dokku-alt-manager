@@ -1,0 +1,12 @@
+ALTER TABLE `host` ADD `notes` TEXT  NULL  AFTER `is_debug`;
+ALTER TABLE `host` MODIFY COLUMN `notes` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci AFTER `addr`;
+ALTER TABLE `host_log` ADD `ts` DATETIME  NULL  AFTER `line`;
+ALTER TABLE `app` ADD `buildstack_id` VARCHAR(255)  NULL  DEFAULT NULL  AFTER `user_id`;
+ALTER TABLE `app` CHANGE `buildstack_id` `buildstack` VARCHAR(255)  CHARACTER SET utf8  COLLATE utf8_general_ci  NULL  DEFAULT NULL;
+ALTER TABLE `app` CHANGE `buildstack` `buildpack_url` VARCHAR(255)  CHARACTER SET utf8  COLLATE utf8_general_ci  NULL  DEFAULT NULL;
+CREATE TABLE `access` (id INT(11) UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT);
+ALTER TABLE `access` ADD `fingerprint` VARCHAR(255)  NULL  DEFAULT NULL  AFTER `id`;
+ALTER TABLE `access` ADD `publickey` TEXT  NULL  AFTER `fingerprint`;
+ALTER TABLE `access` ADD `privatekey` TEXT  NULL  AFTER `publickey`;
+ALTER TABLE `access` ADD `app_id` INT  NULL  DEFAULT NULL  AFTER `privatekey`;
+ALTER TABLE `access` ADD `type` VARCHAR(50)  NULL  DEFAULT NULL  AFTER `app_id`;

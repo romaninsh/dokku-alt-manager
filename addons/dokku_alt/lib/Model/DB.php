@@ -8,12 +8,12 @@ class Model_DB extends \SQL_Model {
 
 
         $this->addField('name');
-        $this->addField('type')->enum(['mariadb','mysql','postrgresql','redis','memcache'])->mandatory(true);
+        $this->addField('type')->enum(['mongodb','mariadb','postrgresql','redis','memcache'])->mandatory(true);
 
         $this->addHook('beforeInsert,beforeDelete',$this);
 
         $this->hasOne('dokku_alt/Host');
-        $this->hasMany('dokku_alt/DB_Link');
+        $this->hasMany('dokku_alt/DB_Link',null,null,'DB_Link');
     }
     function cmd($command, $args=[]){
         array_unshift($args, $this['name']);

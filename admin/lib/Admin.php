@@ -1,8 +1,9 @@
 <?php
 
-class Admin extends App_Admin {
-
-    function init() {
+    class Admin extends App_Admin
+{
+    public function init()
+    {
         parent::init();
 
         $this->api->pathfinder
@@ -17,8 +18,18 @@ class Admin extends App_Admin {
         $this->dbConnect();
 
         $this->api->menu->addItem(['Dashboard', 'icon'=>'home'], '/');
+        $this->api->menu->addItem(['Users', 'icon'=>'users'], 'users');
 
         $this->add('dokku_alt/Initiator');
+
+        $auth = $this->add('Auth');
+        $user = $auth->setModel('User');
+        $auth->usePasswordEncryption();
+        if (((string) $user->count())>0) {
+            $auth->check();
+        } else {
+            $this->layout->add('View_Error')->set('No user accounts found. Please define them before continuing.');
+        }
     }
 }
 /*
