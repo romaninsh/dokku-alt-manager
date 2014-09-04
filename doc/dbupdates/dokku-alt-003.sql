@@ -1,6 +1,6 @@
 ALTER TABLE `host` ADD `notes` TEXT  NULL  AFTER `is_debug`;
 ALTER TABLE `host` MODIFY COLUMN `notes` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci AFTER `addr`;
-ALTER TABLE `host_log` ADD `ts` DATETIME  NULL  AFTER `line`;
+alter table app add user_id int;
 ALTER TABLE `app` ADD `buildstack_id` VARCHAR(255)  NULL  DEFAULT NULL  AFTER `user_id`;
 ALTER TABLE `app` CHANGE `buildstack_id` `buildstack` VARCHAR(255)  CHARACTER SET utf8  COLLATE utf8_general_ci  NULL  DEFAULT NULL;
 ALTER TABLE `app` CHANGE `buildstack` `buildpack_url` VARCHAR(255)  CHARACTER SET utf8  COLLATE utf8_general_ci  NULL  DEFAULT NULL;
