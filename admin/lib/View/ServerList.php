@@ -16,6 +16,7 @@ class View_ServerList extends CompleteLister {
             ;
 
         $this->current_row_html['link'] = $this->app->url('dam/hosts/details',['host_id'=>$this->model->id]);
+        $this->current_row_html['key-link'] = $this->app->url('dam/hosts/access',['host_id'=>$this->model->id]);
 
         //$b=$this->owner->add('Button')->set('Ping');
         //this->current_row_html['buttons']=$b->getHTML();
@@ -27,25 +28,6 @@ class View_ServerList extends CompleteLister {
 
     function init() {
         parent::init();
-
-
-
-
-            /*
-            ->set(function($p)use($rl) {
-
-                var_Dump($_GET);
-                $f=$p->add('Form');
-                $f->setModel('Server',array('name','notes'))->tryLoadAny();
-
-                $f->addSubmit('Update');
-                if($f->isSubmitted()){
-                    $f->update();
-                    $f->js(null,$rl)->univ()->closeDialog()->execute();
-                }
-            });
-             */
-
 
         if($this->pop){
             if($this->pop instanceof jQuery_Chain) {

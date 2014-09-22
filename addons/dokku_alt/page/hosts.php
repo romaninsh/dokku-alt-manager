@@ -15,7 +15,6 @@ class page_hosts extends Page
     function page_index()
     {
 
-
         $cr=$this->add('CRUD');
         $cr->setModel($this->model);
         $cr->addAction('test','column');
@@ -26,6 +25,19 @@ class page_hosts extends Page
         if($p_log){
             $p_log->add('Grid')->setModel($cr->model->load($cr->id)->ref('Host_Log'));
         };
+    }
+
+    function page_access()
+    {
+        $this->model->load($this->app->stickyGet('host_id'));
+
+        $this->title='Access for '.$this->model['name'];
+        $this->addCrumb('Cloud Hosts');
+
+        $cr=$this->add('CRUD');
+        $cr->setModel($this->model->ref('Access'));
+        $cr->addAction('generateAndadd','toolbar');
+
     }
 
     function page_details()
@@ -69,6 +81,11 @@ class page_hosts extends Page
             ->js('click')
             ->univ()
             ->frameURL('Log for '.$this->model['name'],$this->app->url('./log'));
+
+        $bs->addButton('Test Streams')
+            ->js('click')
+            ->univ()
+            ->frameURL('show tables | dokku mariadb:console node-js-app test123 for '.$this->model['name'],$this->app->url('./teststream'));
 
 
 
@@ -132,6 +149,13 @@ class page_hosts extends Page
     {
         $this->model->load($this->app->stickyGet('host_id'));
         $this->add('Grid')->setModel($this->model->ref('Host_Log'))->setOrder('ts','desc');
+    }
+
+    function page_details_teststream()
+    {
+        $this->model->load($this->app->stickyGet('host_id'));
+        // show tables;'  | dokku mariadb:console node-js-app test123
+        $this->add('View')->setElement('pre')->set($this->model->executeCommandSTDIN('mariadb:console',"show tables",['node-js-app','test123']));
     }
 
     function page_details_app()

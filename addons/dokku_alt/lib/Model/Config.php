@@ -24,10 +24,10 @@ class Model_Config extends \SQL_Model {
         $this->cmd('set', [$this['name'],$this['value']]);
     }
     function beforeDelete(){
-        $this->cmd('delete', [$this['name']]);
+        $this->cmd('unset', [$this['name']]);
     }
     function beforeModify(){
-        $this->cmd('delete', [$this['name']]);
+        //$this->cmd('delete', [$this['name']]);
         $this->cmd('set', [$this['name'],$this['value']]);
     }
 }

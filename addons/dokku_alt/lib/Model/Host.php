@@ -16,6 +16,7 @@ class Model_Host extends \SQL_Model {
         $this->hasMany('dokku_alt/App',null,null,'App');
         $this->hasMany('dokku_alt/Host_Log',null,null,'Host_Log');
         $this->hasMany('dokku_alt/DB',null,null,'DB');
+        $this->hasMany('dokku_alt/Access_Admin',null,null,'Access');
 
         $this->addField('is_debug')->type('boolean');
     }
@@ -50,6 +51,22 @@ class Model_Host extends \SQL_Model {
         // must escape
         ///$args = array_map('escapeshellarg',$args);
         return trim($ssh->exec($command.' '.join(' ',$args)));
+    }
+
+    function executeCommandSTDIN($command, $stdin, $args = []) {
+        $this->ref('Host_Log')
+            ->set('line',$command.' '.join(' ',$args))
+            ->saveAndUnload();
+
+        if($this['is_debug']){
+            return '[debug-logged]';
+        }
+        $ssh=$this->connect();
+        $ssh->enablePTY();
+        $ssh->exec($command.' '.join(' ',$args));
+        $ssh->write($stdin."\n\x04");
+        $ssh->setTimeout(3);
+        return trim($ssh->read());
     }
 
     function test(){
