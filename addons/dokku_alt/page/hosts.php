@@ -91,7 +91,7 @@ class page_hosts extends Page
 
         $cr_app = $c1->add('CRUD');
         $cr_app->setModel($this->model->ref('App'));
-        $cr_app->grid->addFormatter('name','link', ['page'=>'./app','id_field'=>'app_id']);
+        $cr_app->grid->addFormatter('name','link', ['page'=>'./apps','id_field'=>'app_id']);
         $cr_app->addAction('deployGitApp','toolbar');
 
         $c2->add('CRUD')->setModel($this->model->ref('DB'));
@@ -148,29 +148,5 @@ class page_hosts extends Page
     }
 
 
-    function page_details_app()
-    {
-        $this->model->load($this->app->stickyGet('host_id'));
-        $this->m_app=$this->model->ref('App')->load($this->app->stickyGet('app_id'));
-
-        $this->title=$this->m_app['name'];
-        $this->addCrumb($this->model['name']);
-        $this->addCrumb('Cloud Hosts');
-
-        $c=$this->add('Columns');
-        $c1=$c->addColumn(6);
-        $c2=$c->addColumn(6);
-
-        //$cr_app->setModel($this->model->ref('App'));
-        //$cr_app->grid->addFormatter('name','link', ['page'=>'./app','id_field'=>'app_id']);
-        $c1->add('CRUD')->setModel($this->m_app->ref('Domain'));
-
-        $c2->add('CRUD')->setModel($this->m_app->ref('Config'));
-
-        $cr=$c2->add('CRUD');
-        $cr->setModel($this->m_app->ref('Access'));
-        $cr->addAction('generateAndadd','toolbar');
-        //$c2->add('CRUD')->setModel($this->m_app->ref('DB_Link'));
-    }
 }
 

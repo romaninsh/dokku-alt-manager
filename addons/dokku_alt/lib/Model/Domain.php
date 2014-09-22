@@ -8,25 +8,34 @@ class Model_Domain extends \SQL_Model {
 
         $this->hasOne('dokku_alt/App');
 
+        $this->addField('is_redirect')->type('boolean');
+
         $this->addField('name');
 
-        $this->addHook('beforeInsert,beforeDelete,beforeModify',$this);
+        $this->addHook('afterSave,afterDelete',[$this,'setDomains']);
     }
-    function cmd($command, $args=[]){
+    function cmd($command, $args=[], $is_redirect=false){
 
         $app = $this->ref('app_id');
         $host = $app->ref('host_id');
 
-        return $host->executeCommand('domain:'.$command, [$app['name'], join('=', $args)]);
+        return $host->executeCommand('domains:'.($is_redirect?'redirect:':'').$command, array_merge([$app['name']], $args));
     }
-    function beforeInsert(){
-        $this->cmd('add', [$this['name'],$this['value']]);
-    }
-    function beforeDelete(){
-        $this->cmd('delete', [$this['name']]);
-    }
-    function beforeModify(){
-        $this->cmd('delete', [$this['name']]);
-        $this->cmd('set', [$this['name'],$this['value']]);
+
+    /**
+     * Configure application with requested domains
+     */
+    function setDomains(){
+        $domain_alias = $domain_redirect =[];
+        foreach($this as $domain){
+            if ($domain['is_redirect']) {
+                $domain_redirect[] = $domain['name'];
+            } else {
+                $domain_alias[] = $domain['name'];
+            }
+        }
+        $this->cmd('set', $domain_alias);
+        $this->cmd('set', $domain_redirect, true);
+        return $this;
     }
 }

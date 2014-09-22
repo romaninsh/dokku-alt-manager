@@ -11,8 +11,8 @@ class Model_Access extends  \SQL_Model {
         $this->addField('type');
 
         $this->addField('fingerprint');
-        $this->addField('publickey')->type('text');
-        $this->addField('privatekey')->type('text');
+        $this->addField('publickey')->type('text')->caption('Public Key');
+        $this->addField('privatekey')->type('text')->hint('Optional')->caption('Private Key');
 
     }
 

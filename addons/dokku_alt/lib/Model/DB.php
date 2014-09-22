@@ -16,7 +16,7 @@ class Model_DB extends \SQL_Model {
         $this->hasMany('dokku_alt/DB_Link',null,null,'DB_Link');
     }
     function cmd($command, $args=[]){
-        array_unshift($args, $this['name']);
+        array_push($args, $this['name']);
         return $this->ref('host_id')->executeCommand($this['type'].':'.$command, $args);
     }
     function beforeInsert(){

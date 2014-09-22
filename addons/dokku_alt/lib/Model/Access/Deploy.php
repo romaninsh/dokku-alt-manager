@@ -13,11 +13,15 @@ class Model_Access_Deploy extends Model_Access
     }
     function beforeSave(){
         //$this->cmd();
-
+        $app = $this->ref('app_id');
+        $response = $app->ref('host_id')->executeCommandSTDIN('deploy:allow', $this['publickey'], [$app['name']]);
+        list(,$fingerprint)=explode('----->',$response);
+        $fingerprint=trim($fingerprint);
+        list($fingerprint)=explode(' ',$fingerprint);
+        $this['fingerprint']=$fingerprint;
     }
-    function cmd($command, $args=[]){
-        $app=$this->ref('app_id');
-        array_unshift($args, $this['name']);
-        return $app->ref('host_id')->executeCommand('deploy:'.$command, $args);
+    function beforeDelete(){
+        $app = $this->ref('app_id');
+        $response = $app->ref('host_id')->executeCommand('access:revoke', [$app['name'], $this['fingerprint']]);
     }
 }

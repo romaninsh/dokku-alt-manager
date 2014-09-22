@@ -16,7 +16,7 @@ class Model_App extends  \SQL_Model {
 
         $this->hasOne('dokku_alt/Buildpack','buildpack_url',false,'Buildpack');
 
-        $this->addHook('beforeSave,beforeInsert,afterSave',$this);
+        //$this->addHook('beforeSave,beforeInsert,afterSave',$this);
         //$this->addHook('afterSave',$this);
 //        $this->addHook('afterInsert',$this);
 
@@ -31,6 +31,7 @@ class Model_App extends  \SQL_Model {
     function beforeSave(){
         if(!$this->id)return;
         if($this->noexec)return;
+        /*
         if($this->isDirty('is_started')){
             if($this['is_started']){
                 $this->start();
@@ -53,13 +54,13 @@ class Model_App extends  \SQL_Model {
         if(!$this['url']){
             $this['url'] = $this->getURL();
         }
+        */
     }
-    function beforeInsert(){
-        $this->ref('host_id')->executeCommand('create',[$this['name']]);
-    }
+    /*
     function afterSave(){
         $this->ref('Config')->tryLoadBy('name','BUILDPACK_URL')->set(['name'=>'BUILDPACK_URL', 'value'=>$this['buildpack_url'] ]) ->save();
     }
+    */
     function discover(){
         $this['is_started']=null;
         $this['url']=null;
@@ -71,27 +72,47 @@ class Model_App extends  \SQL_Model {
         return $this->ref('host_id')->executeCommand('apps:'.$command, $args);
     }
 
+    /**
+     * Creates empty application
+     */
+    function create($name)
+    {
+        $this['name']=$name;
+        $this->ref('host_id')->executeCommand('create',[$this['name']]);
+        $this->save();
+    }
+
     function top(){
         return $this->cmd('top');
     }
     function disable(){
         $ret = $this->cmd('disable');
+        $this['is_enabled']=false;
+        $this->save();
         return $ret;
     }
     function enable(){
         $ret = $this->cmd('enable');
+        $this['is_enabled']=true;
+        $this->save();
         return $ret;
     }
     function start(){
         $ret = $this->cmd('start');
+        $this['is_started']=true;
+        $this->save();
         return $ret;
     }
     function stop(){
         $ret = $this->cmd('stop');
+        $this['is_started']=false;
+        $this->save();
         return $ret;
     }
     function getURL(){
-        return $this->ref('host_id')->executeCommand('url', [$this['name']]);
+        $this['url']=$this->ref('host_id')->executeCommand('url', [$this['name']]);
+        $this->save();
+        return $this['url'];
     }
 
     function pullPush() {
