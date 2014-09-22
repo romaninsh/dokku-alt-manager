@@ -82,10 +82,10 @@ class page_hosts extends Page
             ->univ()
             ->frameURL('Log for '.$this->model['name'],$this->app->url('./log'));
 
-        $bs->addButton('Test Streams')
+        $bs->addButton('Test Push')
             ->js('click')
             ->univ()
-            ->frameURL('show tables | dokku mariadb:console node-js-app test123 for '.$this->model['name'],$this->app->url('./teststream'));
+            ->frameURL('Test repo push '.$this->model['name'],$this->app->url('./testpush'));
 
 
 
@@ -97,6 +97,7 @@ class page_hosts extends Page
         $cr_app = $c1->add('CRUD');
         $cr_app->setModel($this->model->ref('App'));
         $cr_app->grid->addFormatter('name','link', ['page'=>'./app','id_field'=>'app_id']);
+        $cr_app->addAction('deployGitApp','toolbar');
 
         $c2->add('CRUD')->setModel($this->model->ref('DB'));
     }
@@ -151,11 +152,29 @@ class page_hosts extends Page
         $this->add('Grid')->setModel($this->model->ref('Host_Log'))->setOrder('ts','desc');
     }
 
-    function page_details_teststream()
+    function page_details_testpush()
     {
         $this->model->load($this->app->stickyGet('host_id'));
         // show tables;'  | dokku mariadb:console node-js-app test123
-        $this->add('View')->setElement('pre')->set($this->model->executeCommandSTDIN('mariadb:console',"show tables",['node-js-app','test123']));
+
+        $f=fopen('../tmp/tmpkey','w+');
+        fputs($f,$this->model['private_key']);
+        fclose($f);
+
+        $p=$this->add('System_ProcessIO')
+            ->exec('ssh-agent bash')
+            ->write('cd ../tmp')
+            ->write('ssh-add tmpkey')
+            ->write('rm -rf node-js-sample')
+            ->write('git clone https://github.com/heroku/node-js-sample')
+            ->write('cd node-js-sample')
+            ->write('git remote add deploy dokku@'.$this->model['addr'].':app77')
+            ->write_all('git push deploy master');
+        $out=$p->read_all();
+
+        unlink('../tmp/tmpkey');
+
+        $this->add('View')->setElement('pre')->set($out);
     }
 
     function page_details_app()

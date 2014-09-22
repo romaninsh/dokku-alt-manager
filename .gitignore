@@ -5,6 +5,7 @@ doc/dbupdates/*.fail
 upload/*
 .DS_Store
 /config.php
+/tmp
 config-auto.php
 composer.phar
 /vendor/*

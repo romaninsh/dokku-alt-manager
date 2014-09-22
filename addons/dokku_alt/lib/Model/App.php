@@ -9,6 +9,8 @@ class Model_App extends  \SQL_Model {
         $this->hasOne('dokku_alt/Host');
         $this->addField('name');
         $this->addField('url');
+
+        $this->addField('last_build')->type('text')->system(true);
         $this->addField('is_started')->type('boolean');
         $this->addField('is_enabled')->type('boolean')->defaultValue(true);
 
@@ -25,8 +27,10 @@ class Model_App extends  \SQL_Model {
         $this->hasMany('dokku_alt/Access_Deploy',null,null,'Access');
     }
 
+    private $noexec=false;
     function beforeSave(){
         if(!$this->id)return;
+        if($this->noexec)return;
         if($this->isDirty('is_started')){
             if($this['is_started']){
                 $this->start();
@@ -89,4 +93,66 @@ class Model_App extends  \SQL_Model {
     function getURL(){
         return $this->ref('host_id')->executeCommand('url', [$this['name']]);
     }
+
+    function pullPush() {
+        $host = $this->ref('host_id');
+
+        // TODO improve security
+        $f=fopen('../tmp/tmpkey','w+');
+        fputs($f,$host['private_key']);
+        fclose($f);
+
+        $p=$this->add('System_ProcessIO')
+            ->exec('ssh-agent bash')
+            ->write('cd ../tmp')
+            ->write('ssh-add tmpkey')
+            ->write('cd '.$name)
+            ->write('git pull origin master')
+            ->writeAll('git push deploy master');
+        $out=$p->readAll('err');
+
+        unlink('../tmp/tmpkey');
+
+    }
+
+    function deployGitApp($name, $repository)
+    {
+        $host = $this->ref('host_id');
+
+        // TODO improve security
+        $f=fopen('../tmp/tmpkey','w+');
+        fputs($f,$host['private_key']);
+        fclose($f);
+
+        $p=$this->add('System_ProcessIO')
+            ->exec('ssh-agent bash')
+            ->write('cd ../tmp')
+            ->write('chmod 600 tmpkey')
+            ->write('ssh-add tmpkey')
+            ->write('rm -rf app')
+            ->write('mkdir '.$name)
+            ->write('cd '.$name)
+            ->write('git clone '.$repository.' .')
+            ->write('git remote add deploy dokku@'.$host['addr'].':'.$name)
+            ->writeAll('git push deploy master');
+        $out=$p->readAll('err');
+
+
+        unlink('../tmp/tmpkey');
+
+        $this['name']=$name;
+        $this['url']='http://'.$name.'.'.$host['addr'].'/';
+        $this['last_build'] = $out;
+        $this->noexec=true;
+
+        $this->save();
+
+        $this->noexec=false;
+
+
+        return 'Deployed to '.$this['url'];
+    }
+
+
+
 }
