@@ -85,6 +85,8 @@ class page_hosts_details_apps extends Page
         $f = $this->add('View_ModelDetails');
         $this->model->removeElement('last_build');
         $f->setModel($this->model);
+
+        $this->add('View')->setElement('pre')->set($this->model['last_build']);
     }
 
     function page_top(){
