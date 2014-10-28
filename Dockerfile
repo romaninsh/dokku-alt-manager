@@ -6,6 +6,7 @@ ENV DEBIAN_FRONTEND noninteractive
 RUN apt-get update && \
     apt-get -yq install \
         curl \
+        git \
         apache2 \
         libapache2-mod-php5 \
         php5-mysql \
@@ -28,6 +29,7 @@ RUN mkdir -p /app && rm -fr /var/www/html && ln -s /app/admin/public /var/www/ht
 RUN rm -fr /app
 ADD . /app
 RUN chown www-data:www-data /app -R
+RUN cd /app && composer install
 
 EXPOSE 80
 WORKDIR /app
