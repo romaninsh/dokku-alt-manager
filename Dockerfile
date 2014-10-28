@@ -22,6 +22,7 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 # Add image configuration and scripts
 ADD run.sh /run.sh
 RUN chmod 755 /*.sh
+ADD config-dist.php /app/config.php
 
 # Configure /app folder with sample app
 RUN mkdir -p /app && rm -fr /var/www/html && ln -s /app/admin/public /var/www/html
