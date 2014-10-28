@@ -23,7 +23,6 @@ RUN chmod 755 /*.sh
 
 # Configure /app folder with sample app
 RUN mkdir -p /app && rm -fr /var/www/html && ln -s /app /var/www/html
-ADD sample/ /app
 
 # Add application code onbuild
 ONBUILD RUN rm -fr /app
