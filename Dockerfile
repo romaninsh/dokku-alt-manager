@@ -16,13 +16,13 @@ RUN apt-get update && \
         php-apc && \
     rm -rf /var/lib/apt/lists/*
 
-#RUN sed -i "s/variables_order.*/variables_order = \"EGPCS\"/g" /etc/php5/apache2/php.ini
+RUN sed -i "s/variables_order.*/variables_order = \"EGPCS\"/g" /etc/php5/apache2/php.ini
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 # Add image configuration and scripts
 ADD run.sh /run.sh
 RUN chmod 755 /*.sh
-ADD config-dist.php /app/config.php
+
 
 # Configure /app folder with sample app
 RUN mkdir -p /app && rm -fr /var/www/html && ln -s /app/admin/public /var/www/html
@@ -30,6 +30,7 @@ RUN mkdir -p /app && rm -fr /var/www/html && ln -s /app/admin/public /var/www/ht
 # Add application code onbuild
 RUN rm -fr /app
 ADD . /app
+ADD config-dist.php /app/config.php
 RUN chown www-data:www-data /app -R
 RUN cd /app && composer install
 
