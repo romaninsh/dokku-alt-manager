@@ -38,7 +38,7 @@ RUN chown www-data:www-data /app -R
 RUN cd /app && composer install
 
 # Install or upgrade database
-RUN cd /app && php bootstrap.php
+ONBUILD RUN cd /app && php bootstrap.php
 
 EXPOSE 80
 WORKDIR /app
