@@ -5,6 +5,7 @@
     public function init()
     {
         parent::init();
+        /*
 
         $this->api->pathfinder
             ->addLocation(array(
@@ -12,6 +13,7 @@
             ))
             ->setBasePath($this->pathfinder->base_location->getPath() . '/..')
         ;
+        */
 
         $this->template['css']='compact.css';
 
