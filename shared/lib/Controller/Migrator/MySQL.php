@@ -15,7 +15,7 @@ class Controller_Migrator_MySQL extends AbstractController {
 
         $this->db->dsql()->expr('create table if not exists `[table]` '.
             '(id int not null primary key auto_increment, name varchar(255), unique key(name), status enum("ok","fail"))',
-            ['table'=>'_db_update'])->debug()->execute();
+            ['table'=>'_db_update'])->execute();
 
         // todo - sort files in folders
         foreach($folders as $dir){
