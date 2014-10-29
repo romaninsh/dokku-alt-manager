@@ -1,6 +1,5 @@
 #!/bin/bash
-
-echo "Database=$DATABASE_URL"
-
+cd /app
+php bootstrap.php
 source /etc/apache2/envvars
 exec apache2 -D FOREGROUND

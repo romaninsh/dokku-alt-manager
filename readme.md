@@ -1,8 +1,7 @@
 Welcome to Dokku Alt Manager
 ============================
 
-This is a web application which will help you manage your
-web host running dokku-alt (https://github.com/dokku-alt/dokku-alt) through
+Manage your dokku-alt (https://github.com/dokku-alt/dokku-alt) through
 the comfort of your browser.
 
 ![Screenshot](/doc/screenshot.png)
@@ -10,53 +9,64 @@ the comfort of your browser.
 ![Screenshot](/doc/screenshot3.png)
 
 
-Install with dokku-alt-beta
----------------------------
+Install with dokku-alt
+----------------------
 
+The recommended way to install dokku-alt-manager is by using dokku-alt. You
+deploy application to dokku-alt using "GIT PUSH", so you will need to
+checkout this repository locally then "PUSH" it.
 
-First, Make sure you install dokku-alt-beta on "your-dokku-host". This will not
-work with "dokku". See http://dokku-alt.github.io/try-it.html
+1. Install dokku-alt on Ubuntu by following instruction here: http://dokku-alt.github.io/try-it.html
 
-Next - upgrade to "beta" release of dokku-alt by following instructions here:
-https://github.com/dokku-alt/dokku-alt#upgrade-and-beta-releases
+2. Clone this repository locally.
 
-
-Finally - execute the following commands:
+3. Open terminal, CD to repository and type this:
 
     HOST=your-dokku-host    # Deploy to existing dokku-alt host
 
     ssh dokku@$HOST create dam
-
-    ssh dokku@$HOST config:set dam BUILDPACK_URL=https://github.com/romaninsh/heroku-buildpack-php.git#development
-
     ssh dokku@$HOST mariadb:create dam
     ssh dokku@$HOST mariadb:link dam dam
-    ssh dokku@$HOST mariadb:console dam dam < doc/schema.sql
 
-    git clone https://github.com/romaninsh/dokku-alt-manager.git
-    cd dokku-alt-manager
     git remote add deploy dokku@$HOST:dam
     git push deploy master
 
-If everything goes smooth, this should respond with the URL you can
-copy-paste into your browser.
+The push command will respond with the URL you can open and use.
 
-Local Use
+Local Installation (for development)
 ---------
 
-If you are running Apache / PHP locally, create config.php file with the
-following contents inside:
+1. If you do not have composer, install it:
 
-    <?php
-    $config['dsn']='mysql://root:root@localhost/dam';
+    curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
-Then open "admin/public" sub-folder of this project in your web browser.
-Import doc/schema.sql into your MySQL or MariaDB database.
+2. Copy config-default.php to config.php, then edit it
+
+3. In terminal run:
+
+    composer install
+    php bootstrap.php
+
+This will install database and you can start using Dokku-alt by opening
+"admin/public" sub-folder of this project in your web browser.
 
 Troubleshooting
 ----------------
 
+It's always good to see logs:
+
     ssh dokku@$HOST logs dam -t
+
+You can also run
+
+    ssh dokku@HOST enter dam
+
+    tail /var/log/apache2/*
+
+You can also run bootstrap.php with arguments, for more info:
+
+    php bootstrap.php -h
+
 
 Features
 --------

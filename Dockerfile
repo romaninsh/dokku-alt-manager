@@ -17,6 +17,7 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 
 RUN sed -i "s/variables_order.*/variables_order = \"EGPCS\"/g" /etc/php5/apache2/php.ini
+RUN sed -i "s/variables_order.*/variables_order = \"EGPCS\"/g" /etc/php5/cli/php.ini
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 RUN a2enmod rewrite
@@ -36,6 +37,9 @@ ADD config-dist.php /app/config.php
 ADD dam.conf /etc/apache2/sites-enabled/000-default.conf
 RUN chown www-data:www-data /app -R
 RUN cd /app && composer install
+
+# Install or upgrade database
+ONBUILD RUN cd /app && php bootstrap.php
 
 EXPOSE 80
 WORKDIR /app
