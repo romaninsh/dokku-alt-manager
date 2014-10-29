@@ -1,3 +1,4 @@
+[![Stories in Ready](https://badge.waffle.io/romaninsh/dokku-alt-manager.png?label=ready&title=Ready)](https://waffle.io/romaninsh/dokku-alt-manager)
 Welcome to Dokku Alt Manager
 ============================
 
