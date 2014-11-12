@@ -90,7 +90,7 @@ class page_hosts extends Page
         $c2=$c->addColumn(6);
 
         $cr_app = $c1->add('CRUD');
-        $cr_app->setModel($this->model->ref('App'));
+        $cr_app->setModel($this->model->ref('App'),['host','name','url']);
         $cr_app->grid->addFormatter('name','link', ['page'=>'./apps','id_field'=>'app_id']);
         //$cr_app->addAction('deployGitApp','toolbar');
 
