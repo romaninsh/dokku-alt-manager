@@ -9,6 +9,7 @@ class page_hosts extends Page
 
     function init(){
         $this->setModel('dokku_alt/Host');
+        $this->model->load($this->app->stickyGet('host_id'));
         parent::init();
     }
 
@@ -29,7 +30,6 @@ class page_hosts extends Page
 
     function page_access()
     {
-        $this->model->load($this->app->stickyGet('host_id'));
 
         $this->title='Access for '.$this->model['name'];
         $this->addCrumb('Cloud Hosts');
@@ -92,9 +92,35 @@ class page_hosts extends Page
         $cr_app = $c1->add('CRUD');
         $cr_app->setModel($this->model->ref('App'));
         $cr_app->grid->addFormatter('name','link', ['page'=>'./apps','id_field'=>'app_id']);
-        $cr_app->addAction('deployGitApp','toolbar');
+        //$cr_app->addAction('deployGitApp','toolbar');
+
+        if(!$cr_app->isEditing()){
+            $cr_app->add_button->setLabel(['Create Blank App']);
+            $cr_app->grid->addButton(['Deploy Git App','icon'=>'github'])
+                ->js('click')->univ()->dialogURL('Deploy Git App',$this->app->url('./git'));
+        }
 
         $c2->add('CRUD')->setModel($this->model->ref('DB'));
+    }
+
+    function page_details_git(){
+        $f=$this->add('Form');
+        $f->addField('line','repo','Git Repository');
+        $f->addField('line','name','Name');
+        $f->addField('dropdown','key','Key for Authentication')
+            ->setModel('Model_Keychain');
+        $f->addField('checkbox','hook','Enable automatic updates through Web Hook')
+            ->setFieldHint('not implemented yet');
+
+
+        $f->onSubmit(function($f){
+            $app = $this->model->ref('App');
+            $app['name']=$f['name'];
+            $key = $f->getElement('key')->model->load($f['key']);
+            $app->deployGitApp($f['name'],$f['repo'],$key);
+            return 'Deployed!';
+        });
+
     }
 
     function page_details_edit()

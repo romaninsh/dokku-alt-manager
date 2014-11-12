@@ -23,13 +23,17 @@ class page_add extends Page
         $this->add('H2')->set('Step 2: Fill out this form');
         $form = $this->add('Form');
         $form->setModel('dokku_alt/Host',['addr','name','private_key']);
+        $form->getElement('addr')->setFieldHint('mysite.example.com');
+        $form->getElement('private_key')->setFieldHint('If you leave this field empty, the application will find appropriate key in Keychain');
         $form->addSubmit('Continue');
+        $form->addButton('Back')->link($this->app->url('/'));
 
         $form->onSubmit(function($f){
             $f->update();
             try {
                 $version = $f->model->executeCommand('version');
             } catch (Exception $e){
+                $f->model->delete();
                 return $f->error('addr', $e->getMessage());
             }
             if(!$version){

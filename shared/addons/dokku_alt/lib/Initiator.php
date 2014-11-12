@@ -14,6 +14,8 @@ class Initiator extends \Controller_Addon {
     }
     function initMenu(){
 
+        return;
+
         $m = $this->app->layout->menu->addMenu(['Cloud Config','icon'=>'cloud']);
         $m->addItem(['Apps','icon'=>'rocket-1'],'dam/apps');
         $m->addItem(['Domains','icon'=>'bookmarks'],'dam/domains');

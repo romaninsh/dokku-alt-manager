@@ -9,7 +9,7 @@ class Model_Host extends \SQL_Model {
         $this->addField('name')->mandatory(true);
         $this->addField('addr')->mandatory(true);
         $this->addField('public_key')->type('text');
-        $this->addField('private_key')->type('text')->visible(false)->mandatory(true);
+        $this->addField('private_key')->type('text')->visible(false);
 
         $this->addField('notes')->type('text');
 
@@ -24,11 +24,7 @@ class Model_Host extends \SQL_Model {
         try {
 
             $ssh = new \Net_SSH2($this['addr'], $this['ssh_port'] ? : 22);
-            $key = new \Crypt_RSA();
-
-            if ($key->loadKey($this['private_key']) === false) {
-                throw $this->exception("Private key loading failed!");
-            }
+            $key=$this->getPrivateKey();
 
             if (!$ssh->login($this['ssh_user'] ? : 'dokku', $key)) {
                 throw $this->exception('Login Failed!');
@@ -38,6 +34,28 @@ class Model_Host extends \SQL_Model {
             throw $e; // don't do anything yet
             // var_dump($e);
         }
+    }
+
+    function getPrivateKey(){
+        $key = new \Crypt_RSA();
+
+        if($this['private_key']){
+            $key->loadKey($this['private_key']);
+            return $key;
+        }
+
+        // else look in keychain
+        $k = $this->add('Model_Keychain');
+        $k->tryLoadBy('host',$this['addr']);
+        if(!$k->loaded())$k->tryLoadBy('host','*');
+        if(!$k->loaded())throw $this->exception('Could not find matching private key in Keychain');
+
+
+        $pack = $this->app->getPackingKey();
+        if($pack)$key->setPassword($pack);
+
+        $key->loadKey($k['data']);
+        return $key;
     }
 
     function executeCommand($command, $args = []) {

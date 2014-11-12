@@ -22,7 +22,7 @@ class Controller_Migrator_MySQL extends AbstractController {
 
             $handle = opendir($dir);
             while (false !== ($name = readdir($handle))) {
-                if(substr($name,-4)!='.sql')continue;
+                if(strtolower(substr($name,-4))!='.sql')continue;
 
                 $q = $this->db->dsql()
                     ->table('_db_update')
@@ -39,7 +39,7 @@ class Controller_Migrator_MySQL extends AbstractController {
                     $q->set('status','ok')->replace();
                 }catch(Exception $e){
                     $q->set('status','fail')->replace();
-                    throw $e;
+                    throw $e->addMoreInfo('file',$name);
                 }
             }
         }

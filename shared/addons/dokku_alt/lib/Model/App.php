@@ -14,13 +14,6 @@ class Model_App extends  \SQL_Model {
         $this->addField('is_started')->type('boolean');
         $this->addField('is_enabled')->type('boolean')->defaultValue(true);
 
-        $this->hasOne('dokku_alt/Buildpack','buildpack_url',false,'Buildpack');
-
-        //$this->addHook('beforeSave,beforeInsert,afterSave',$this);
-        //$this->addHook('afterSave',$this);
-//        $this->addHook('afterInsert',$this);
-
-
         $this->hasMany('dokku_alt/Config',null,null,'Config');
         $this->hasMany('dokku_alt/Domain',null,null,'Domain');
         $this->hasMany('dokku_alt/DB_Link',null,null,'DB_Link');
@@ -31,36 +24,7 @@ class Model_App extends  \SQL_Model {
     function beforeSave(){
         if(!$this->id)return;
         if($this->noexec)return;
-        /*
-        if($this->isDirty('is_started')){
-            if($this['is_started']){
-                $this->start();
-            }else{
-                $this->stop();
-            }
-        }
-        if($this->isDirty('is_enabled')){
-            if($this['is_enabled']){
-                $this->enable();
-            }else{
-                $this->disable();
-            }
-        }
-
-
-        if($this['is_started']===null){
-            $this['is_started'] = explode(' ',$this->cmd('status'))[2] == 'running.';
-        }
-        if(!$this['url']){
-            $this['url'] = $this->getURL();
-        }
-        */
     }
-    /*
-    function afterSave(){
-        $this->ref('Config')->tryLoadBy('name','BUILDPACK_URL')->set(['name'=>'BUILDPACK_URL', 'value'=>$this['buildpack_url'] ]) ->save();
-    }
-    */
     function discover(){
         $this['is_started']=null;
         $this['url']=null;
@@ -136,20 +100,46 @@ class Model_App extends  \SQL_Model {
 
     }
 
-    function deployGitApp($name, $repository)
+    function deployGitApp($name, $repository, $deploy_key = null)
     {
         $host = $this->ref('host_id');
+        $key = $host->getPrivateKey();
+        $key->setPassword(); // clear password
 
-        // TODO improve security
-        $f=fopen('../tmp/tmpkey','w+');
-        fputs($f,$host['private_key']);
-        fclose($f);
+
+        // If key for the app repository is necessary, let's also extract it
 
         $p=$this->add('System_ProcessIO')
             ->exec('ssh-agent bash')
             ->write('cd ../tmp')
-            ->write('chmod 600 tmpkey')
-            ->write('ssh-add tmpkey')
+            ;
+
+        // TODO improve security
+        $f=fopen('../tmp/hostkey','w+');
+        fputs($f,$key->getPrivateKey());
+        fclose($f);
+
+        $p
+            ->write('chmod 600 hostkey')
+            ->write('ssh-add hostkey')
+            ;
+
+        if($deploy_key){
+            $key = $deploy_key->getPrivateKey();
+            $key->setPassword(); // clear password
+
+            $f=fopen('../tmp/gitkey','w+');
+            fputs($f,$key->getPrivateKey());
+            fclose($f);
+
+            $p
+                ->write('chmod 600 gitkey')
+                ->write('ssh-add gitkey')
+                ;
+
+        }
+
+        $p
             ->write('rm -rf app')
             ->write('mkdir '.$name)
             ->write('cd '.$name)
@@ -159,7 +149,7 @@ class Model_App extends  \SQL_Model {
         $out=$p->readAll('err');
 
 
-        unlink('../tmp/tmpkey');
+        //unlink('../tmp/tmpkey');
 
         $this['name']=$name;
         $this['url']='http://'.$name.'.'.$host['addr'].'/';
