@@ -83,6 +83,7 @@ class Model_App extends  \SQL_Model {
         $host = $this->ref('host_id');
         $key = $host->getPrivateKey();
         $key->setPassword(); // clear password
+        $name = $this['nmae'];
 
         $tmp_folder=dirname($this->app->pathfinder->base_location->base_path).'/tmp';
 
@@ -103,8 +104,8 @@ class Model_App extends  \SQL_Model {
             ;
 
         // If key for the app repository is necessary, let's also extract it
-        if($this['repository_id']){
-            $key = $this->ref('repository_id')->getPrivateKey();
+        if($this['keychain_id']){
+            $key = $this->ref('keychain_id')->getPrivateKey();
             $key->setPassword(); // clear password
 
             $f=fopen($tmp_folder.'/gitkey','w+');
@@ -124,8 +125,12 @@ class Model_App extends  \SQL_Model {
             ->writeAll('git push deploy master');
         $out=$p->readAll('err');
 
-        @unlink($tmp_folder.'/gitkey');
-        @unlink($tmp_folder.'/hostkey');
+        $this['last_build'] = $out;
+        $this->save();
+
+
+        //@unlink($tmp_folder.'/gitkey');
+        //@unlink($tmp_folder.'/hostkey');
     }
 
     function deployGitApp($name, $repository, $deploy_key = null)
@@ -184,6 +189,7 @@ class Model_App extends  \SQL_Model {
         $this['name']=$name;
         $this['url']='http://'.$name.'.'.$host['addr'].'/';
         $this['last_build'] = $out;
+        $this['repository'] = $repository;
 
         // store keychain_id which we used to access the app
         $this['keychain_id'] = $deploy_key->id;

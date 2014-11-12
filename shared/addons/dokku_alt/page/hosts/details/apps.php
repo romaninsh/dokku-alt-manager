@@ -42,6 +42,12 @@ class page_hosts_details_apps extends Page
             ->addClass('atk-swatch-green')
             ;
 
+        if($this->model['repository']){
+            $bs->addButton('Upgrade')
+                ->addClass('atk-swatch-green')
+                ->js('click')->univ()->dialogURL('Upgrading from Repository',$this->app->url('./upgrade'));
+        }
+
         $bs->addButton('Edit Details')
             ->js('click')
             ->univ()
@@ -78,6 +84,12 @@ class page_hosts_details_apps extends Page
         $cr->setModel($this->model->ref('Access'),['publickey','privatekey'],['fingerprint']);
         $cr->addAction('generateAndadd','toolbar');
         //$c2->add('CRUD')->setModel($this->m_app->ref('DB_Link'));
+    }
+
+    function page_upgrade()
+    {
+        $this->model->pullPush();
+        $this->add('View')->setElement('pre')->set($this->model['last_build']);
     }
 
     function page_edit()

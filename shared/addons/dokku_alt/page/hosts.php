@@ -118,9 +118,9 @@ class page_hosts extends Page
             $app['name']=$f['name'];
             $key = $f->getElement('key')->model->load($f['key']);
             $app->deployGitApp($f['name'],$f['repo'],$key);
-            return 'Deployed!';
-        });
 
+            return $f->js()->html('<pre/>')->children()->text($app['last_build'])->univ()->successMessage('Deployed');
+        });
     }
 
     function page_details_edit()
