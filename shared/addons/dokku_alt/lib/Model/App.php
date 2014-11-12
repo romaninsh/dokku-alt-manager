@@ -84,15 +84,16 @@ class Model_App extends  \SQL_Model {
         $key = $host->getPrivateKey();
         $key->setPassword(); // clear password
 
+        $tmp_folder=dirname($this->app->pathfinder->base_location->base_path).'/tmp';
 
 
         $p=$this->add('System_ProcessIO')
             ->exec('ssh-agent bash')
-            ->write('cd ../tmp')
+            ->write('cd '.$tmp_folder)
             ;
 
         // TODO improve security
-        $f=fopen('../tmp/hostkey','w+');
+        $f=fopen($tmp_folder.'/hostkey','w+');
         fputs($f,$key->getPrivateKey());
         fclose($f);
 
@@ -106,7 +107,7 @@ class Model_App extends  \SQL_Model {
             $key = $this->ref('repository_id')->getPrivateKey();
             $key->setPassword(); // clear password
 
-            $f=fopen('../tmp/gitkey','w+');
+            $f=fopen($tmp_folder.'/gitkey','w+');
             fputs($f,$key->getPrivateKey());
             fclose($f);
 
@@ -123,9 +124,8 @@ class Model_App extends  \SQL_Model {
             ->writeAll('git push deploy master');
         $out=$p->readAll('err');
 
-        @unlink('../tmp/gitkey');
-        @unlink('../tmp/hostkey');
-
+        @unlink($tmp_folder.'/gitkey');
+        @unlink($tmp_folder.'/hostkey');
     }
 
     function deployGitApp($name, $repository, $deploy_key = null)
@@ -137,13 +137,15 @@ class Model_App extends  \SQL_Model {
 
         // If key for the app repository is necessary, let's also extract it
 
+        $tmp_folder=dirname($this->app->pathfinder->base_location->base_path).'/tmp';
+
         $p=$this->add('System_ProcessIO')
             ->exec('ssh-agent bash')
-            ->write('cd ../tmp')
+            ->write('cd '.$tmp_folder)
             ;
 
         // TODO improve security
-        $f=fopen('../tmp/hostkey','w+');
+        $f=fopen($tmp_folder.'/hostkey','w+');
         fputs($f,$key->getPrivateKey());
         fclose($f);
 
@@ -156,7 +158,7 @@ class Model_App extends  \SQL_Model {
             $key = $deploy_key->getPrivateKey();
             $key->setPassword(); // clear password
 
-            $f=fopen('../tmp/gitkey','w+');
+            $f=fopen($tmp_folder.'/gitkey','w+');
             fputs($f,$key->getPrivateKey());
             fclose($f);
 
@@ -176,8 +178,8 @@ class Model_App extends  \SQL_Model {
             ->writeAll('git push deploy master');
         $out=$p->readAll('err');
 
-        @unlink('../tmp/gitkey');
-        @unlink('../tmp/hostkey');
+        @unlink($tmp_folder.'/gitkey');
+        @unlink($tmp_folder.'/hostkey');
 
         $this['name']=$name;
         $this['url']='http://'.$name.'.'.$host['addr'].'/';
