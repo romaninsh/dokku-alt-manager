@@ -37,6 +37,8 @@ ADD config-dist.php /app/config.php
 ADD dam.conf /etc/apache2/sites-enabled/000-default.conf
 RUN chown www-data:www-data /app -R
 RUN cd /app && composer install
+RUN mkdir tmp
+RUN chown www-data tmp
 
 # Install or upgrade database
 ONBUILD RUN cd /app && php bootstrap.php

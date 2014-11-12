@@ -11,20 +11,19 @@ class Model_App extends  \SQL_Model {
         $this->addField('url');
 
         $this->addField('last_build')->type('text')->system(true);
-        $this->addField('is_started')->type('boolean');
-        $this->addField('is_enabled')->type('boolean')->defaultValue(true);
+        //$this->addField('is_started')->type('boolean');
+        //$this->addField('is_enabled')->type('boolean')->defaultValue(true);
 
         $this->hasMany('dokku_alt/Config',null,null,'Config');
         $this->hasMany('dokku_alt/Domain',null,null,'Domain');
         $this->hasMany('dokku_alt/DB_Link',null,null,'DB_Link');
         $this->hasMany('dokku_alt/Access_Deploy',null,null,'Access');
+
+        // TODO move keychain into dokku_alt module, due to multiple dependencies
+        $this->hasOne('Keychain');
+        $this->addField('repository');
     }
 
-    private $noexec=false;
-    function beforeSave(){
-        if(!$this->id)return;
-        if($this->noexec)return;
-    }
     function discover(){
         $this['is_started']=null;
         $this['url']=null;
@@ -80,23 +79,52 @@ class Model_App extends  \SQL_Model {
     }
 
     function pullPush() {
-        $host = $this->ref('host_id');
 
-        // TODO improve security
-        $f=fopen('../tmp/tmpkey','w+');
-        fputs($f,$host['private_key']);
-        fclose($f);
+        $host = $this->ref('host_id');
+        $key = $host->getPrivateKey();
+        $key->setPassword(); // clear password
+
+
 
         $p=$this->add('System_ProcessIO')
             ->exec('ssh-agent bash')
             ->write('cd ../tmp')
-            ->write('ssh-add tmpkey')
+            ;
+
+        // TODO improve security
+        $f=fopen('../tmp/hostkey','w+');
+        fputs($f,$key->getPrivateKey());
+        fclose($f);
+
+        $p
+            ->write('chmod 600 hostkey')
+            ->write('ssh-add hostkey')
+            ;
+
+        // If key for the app repository is necessary, let's also extract it
+        if($this['repository_id']){
+            $key = $this->ref('repository_id')->getPrivateKey();
+            $key->setPassword(); // clear password
+
+            $f=fopen('../tmp/gitkey','w+');
+            fputs($f,$key->getPrivateKey());
+            fclose($f);
+
+            $p
+                ->write('chmod 600 gitkey')
+                ->write('ssh-add gitkey')
+                ;
+
+        }
+
+        $p
             ->write('cd '.$name)
             ->write('git pull origin master')
             ->writeAll('git push deploy master');
         $out=$p->readAll('err');
 
-        unlink('../tmp/tmpkey');
+        @unlink('../tmp/gitkey');
+        @unlink('../tmp/hostkey');
 
     }
 
@@ -148,18 +176,17 @@ class Model_App extends  \SQL_Model {
             ->writeAll('git push deploy master');
         $out=$p->readAll('err');
 
-
-        //unlink('../tmp/tmpkey');
+        @unlink('../tmp/gitkey');
+        @unlink('../tmp/hostkey');
 
         $this['name']=$name;
         $this['url']='http://'.$name.'.'.$host['addr'].'/';
         $this['last_build'] = $out;
-        $this->noexec=true;
+
+        // store keychain_id which we used to access the app
+        $this['keychain_id'] = $deploy_key->id;
 
         $this->save();
-
-        $this->noexec=false;
-
 
         return 'Deployed to '.$this['url'];
     }
