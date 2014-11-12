@@ -21,6 +21,7 @@
 
         $this->api->menu->addItem(['Dashboard', 'icon'=>'home'], '/');
         $this->api->menu->addItem(['Users', 'icon'=>'users'], 'users');
+        $this->api->menu->addItem(['Keys', 'icon'=>'key'], 'keychain');
 
         $this->add('dokku_alt/Initiator');
 
@@ -33,6 +34,15 @@
             $this->layout->add('View_Error')->set('No user accounts found. Please define them before continuing.');
         }
     }
+
+    /**
+     * Packing key is a passphrase for your keychain. It helps you to unlock
+     * passphrase-protected keys
+     */
+    function getPackingKey() {
+        return $this->recall('packing_key',null);
+    }
+
 }
 /*
     apps:disable <app>                              Disable specific app
