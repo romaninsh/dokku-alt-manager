@@ -41,7 +41,7 @@ RUN mkdir /var/www/.ssh
 RUN chown www-data /var/www/.ssh
 
 # Install or upgrade database
-ONBUILD RUN cd /app && php bootstrap.php
+# ONBUILD RUN cd /app && php bootstrap.php
 
 EXPOSE 80
 WORKDIR /app
