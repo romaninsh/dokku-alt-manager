@@ -39,6 +39,10 @@ class Controller_Migrator_MySQL extends AbstractController {
                     $q->set('status','ok')->replace();
                 }catch(Exception $e){
                     $q->set('status','fail')->replace();
+                    if(!$e instanceof BaseException){
+                        $e = $this->exception()
+                            ->addMoreInfo('Original error', $e->getMessage());
+                    }
                     throw $e->addMoreInfo('file',$name);
                 }
             }
