@@ -122,15 +122,18 @@ class Model_App extends  \SQL_Model {
         $p
             ->write('cd '.$name)
             ->write('git pull origin master')
-            ->writeAll('git push deploy master');
+            ->write('git push deploy master')
+            ->writeAll('touch ../all-ok')
+        ;
         $out=$p->readAll('err');
 
         $this['last_build'] = $out;
         $this->save();
 
 
-        //@unlink($tmp_folder.'/gitkey');
-        //@unlink($tmp_folder.'/hostkey');
+        @unlink($tmp_folder.'/gitkey');
+        @unlink($tmp_folder.'/hostkey');
+        @unlink($tmp_folder.'/all-ok');
     }
 
     function deployGitApp($name, $repository, $deploy_key = null)
@@ -180,11 +183,21 @@ class Model_App extends  \SQL_Model {
             ->write('cd '.$name)
             ->write('git clone '.$repository.' .')
             ->write('git remote add deploy dokku@'.$host['addr'].':'.$name)
-            ->writeAll('git push deploy master');
+            ->write('git push deploy master')
+            ->writeAll('touch ../all-ok')
+            ;
         $out=$p->readAll('err');
+
 
         @unlink($tmp_folder.'/gitkey');
         @unlink($tmp_folder.'/hostkey');
+        if(!file_exists($tmp_folder.'/all-ok')){
+            // problem with deployment
+
+            return [''];
+
+        }
+
 
         $this['name']=$name;
         $this['url']='http://'.$name.'.'.$host['addr'].'/';
