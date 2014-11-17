@@ -67,8 +67,6 @@ class page_hosts extends Page
             ->univ()
             ->frameURL('Get Dokku Version for '.$this->model['name'],$this->app->url('./version'));
 
-        $b_sync = $bs->addButton('Sync Apps');
-
         $bs->addButton('List Plugins')
             ->js('click')
             ->univ()
@@ -94,6 +92,10 @@ class page_hosts extends Page
         $c2=$c->addColumn(6);
 
         $cr_app = $c1->add('CRUD');
+
+        $b_sync = $cr_app->addButton(['Sync Apps','icon'=>'retweet']);
+
+
         $cr_app->setModel($this->model->ref('App'),['host','name','url']);
         $cr_app->grid->addFormatter('name','link', ['page'=>'./apps','id_field'=>'app_id']);
         //$cr_app->addAction('deployGitApp','toolbar');
