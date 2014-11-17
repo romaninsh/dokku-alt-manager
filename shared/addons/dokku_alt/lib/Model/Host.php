@@ -87,6 +87,29 @@ class Model_Host extends \SQL_Model {
         return trim($ssh->read());
     }
 
+    /**
+     * This will retrieve list of application from the server and then add
+     * them locally.
+     */
+    function syncApps()
+    {
+        $apps =  explode("\n",$this->executeCommand('apps:list'));
+
+        $m_app = $this->ref('App');
+
+
+        foreach($apps as $app){
+            $m_app -> tryLoadBy('name',$app);
+
+            if(!$m_app['url']){
+                $m_app['url'] = $this->executeCommand('url',[$app]);
+            }
+
+            $m_app['name'] = $app;
+            $m_app->saveAndUnload();
+        }
+    }
+
     function test(){
         return $this->executeCommand('version');
     }

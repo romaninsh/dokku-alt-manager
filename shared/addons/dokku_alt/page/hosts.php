@@ -67,6 +67,8 @@ class page_hosts extends Page
             ->univ()
             ->frameURL('Get Dokku Version for '.$this->model['name'],$this->app->url('./version'));
 
+        $b_sync = $bs->addButton('Sync Apps');
+
         $bs->addButton('List Plugins')
             ->js('click')
             ->univ()
@@ -85,6 +87,8 @@ class page_hosts extends Page
 
 
 
+
+
         $c=$this->add('Columns');
         $c1=$c->addColumn(6);
         $c2=$c->addColumn(6);
@@ -99,6 +103,12 @@ class page_hosts extends Page
             $cr_app->grid->addButton(['Deploy Git App','icon'=>'github'])
                 ->js('click')->univ()->dialogURL('Deploy Git App',$this->app->url('./git'));
         }
+
+        $b_sync->onClick(function() use($cr_app){
+            $this->model->syncApps();
+            return $cr_app->js()->reload();
+        });
+
 
         $c2->add('CRUD')->setModel($this->model->ref('DB'));
     }
