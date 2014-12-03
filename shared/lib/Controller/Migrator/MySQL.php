@@ -17,13 +17,12 @@ class Controller_Migrator_MySQL extends AbstractController {
             '(id int not null primary key auto_increment, name varchar(255), unique key(name), status enum("ok","fail"))',
             ['table'=>'_db_update'])->execute();
 
-        // todo - sort files in folders
         foreach($folders as $dir){
+            
+            foreach(glob("$dir/*.sql") as $filename) {
+                $name = basename($filename);
 
-            $handle = opendir($dir);
-            while (false !== ($name = readdir($handle))) {
-                if(strtolower(substr($name,-4))!='.sql')continue;
-
+                echo "$name...\n";
                 $q = $this->db->dsql()
                     ->table('_db_update')
                     ->where('name',strtolower($name))
@@ -31,7 +30,9 @@ class Controller_Migrator_MySQL extends AbstractController {
 
                 if($q->getOne()==='ok')continue;
 
-                $migration=file_get_contents($dir.'/'.$name);
+                echo "migrating $name...\n";
+
+                $migration=file_get_contents($filename);
 
                 $q->set('name',strtolower($name));
                 try {
