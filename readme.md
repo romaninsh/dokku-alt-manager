@@ -23,14 +23,16 @@ checkout this repository locally then "PUSH" it.
 
 3. Open terminal, CD to repository and type this:
 
-    HOST=your-dokku-host    # Deploy to existing dokku-alt host
+```bash
+HOST=your-dokku-host    # Deploy to existing dokku-alt host
 
-    ssh dokku@$HOST create dam
-    ssh dokku@$HOST mariadb:create dam
-    ssh dokku@$HOST mariadb:link dam dam
+ssh dokku@$HOST create dam
+ssh dokku@$HOST mariadb:create dam
+ssh dokku@$HOST mariadb:link dam dam
 
-    git remote add deploy dokku@$HOST:dam
-    git push deploy master
+git remote add deploy dokku@$HOST:dam
+git push deploy master
+```
 
 The push command will respond with the URL you can open and use.
 
@@ -39,14 +41,18 @@ Local Installation (for development)
 
 1. If you do not have composer, install it:
 
-    curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+```bash
+curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+```
 
 2. Copy config-default.php to config.php, then edit it
 
 3. In terminal run:
 
-    composer install
-    php bootstrap.php
+```bash
+composer install
+php bootstrap.php
+```
 
 This will install database and you can start using Dokku-alt by opening
 "admin/public" sub-folder of this project in your web browser.
