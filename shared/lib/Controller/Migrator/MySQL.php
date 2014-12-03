@@ -22,7 +22,6 @@ class Controller_Migrator_MySQL extends AbstractController {
             foreach(glob("$dir/*.sql") as $filename) {
                 $name = basename($filename);
 
-                echo "$name...\n";
                 $q = $this->db->dsql()
                     ->table('_db_update')
                     ->where('name',strtolower($name))
