@@ -20,8 +20,9 @@ class Controller_Migrator_MySQL extends AbstractController {
         // todo - sort files in folders
         foreach($folders as $dir){
 
-            $handle = opendir($dir);
-            while (false !== ($name = readdir($handle))) {
+            $files = scandir($dir);
+            rsort($files);
+            foreach($files as $name) {
                 if(strtolower(substr($name,-4))!='.sql')continue;
 
                 $q = $this->db->dsql()
