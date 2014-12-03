@@ -21,7 +21,7 @@ class Controller_Migrator_MySQL extends AbstractController {
         foreach($folders as $dir){
 
             $files = scandir($dir);
-            rsort($files);
+            sort($files);
             foreach($files as $name) {
                 if(strtolower(substr($name,-4))!='.sql')continue;
 
