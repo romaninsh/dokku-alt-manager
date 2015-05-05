@@ -31,7 +31,7 @@ class page_add extends Page
         $form->onSubmit(function($f){
             $f->update();
             try {
-                $version = $f->model->updateVersion();
+                $version = $f->model->executeCommand('version');
             } catch (Exception $e){
                 $f->model->delete();
                 return $f->error('addr', $e->getMessage());

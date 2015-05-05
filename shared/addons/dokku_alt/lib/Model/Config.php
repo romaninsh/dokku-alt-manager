@@ -1,6 +1,6 @@
 <?php
 namespace dokku_alt;
-class Model_Config extends Model_Abstract {
+class Model_Config extends \SQL_Model {
     public $table='config';
 
     function init(){

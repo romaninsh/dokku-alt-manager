@@ -1,6 +1,6 @@
 <?php
 /**
- * Page class for application management
+ * Page class
  */
 namespace dokku_alt;
 class page_hosts_details_apps extends Page
@@ -78,7 +78,7 @@ class page_hosts_details_apps extends Page
 
         $c1->add('CRUD')->setModel($this->model->ref('Domain'));
 
-        $c2->add('DamCRUD')->setModel($this->model->ref('Config'));
+        $c2->add('CRUD')->setModel($this->model->ref('Config'));
 
         $cr=$c2->add('CRUD');
         $cr->setModel($this->model->ref('Access'),['publickey','privatekey'],['fingerprint']);
