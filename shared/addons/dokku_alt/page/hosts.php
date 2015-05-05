@@ -15,7 +15,9 @@ class page_hosts extends Page
 
     function page_index()
     {
+        $this->app->redirect($this->app->url('/',['host_id'=>null]));
 
+/*
         $cr=$this->add('CRUD');
         $cr->setModel($this->model);
         $cr->addAction('test','column');
@@ -26,6 +28,7 @@ class page_hosts extends Page
         if($p_log){
             $p_log->add('Grid')->setModel($cr->model->load($cr->id)->ref('Host_Log'));
         };
+        */
     }
 
     function page_access()
@@ -34,7 +37,7 @@ class page_hosts extends Page
         $this->title='Access for '.$this->model['name'];
         $this->addCrumb('Cloud Hosts');
 
-        $cr=$this->add('CRUD');
+        $cr=$this->add('DamCRUD');
         $cr->setModel($this->model->ref('Access'));
         $cr->addAction('generateAndadd','toolbar');
 
@@ -159,7 +162,7 @@ class page_hosts extends Page
     function page_details_version()
     {
         $this->model->load($this->app->stickyGet('host_id'));
-        $this->add('View')->set($this->model->executeCommand('version'));
+        $this->add('View')->set($this->model->updateVersion());
     }
     function page_details_plugins()
     {

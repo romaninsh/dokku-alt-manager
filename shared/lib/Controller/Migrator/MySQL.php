@@ -17,7 +17,6 @@ class Controller_Migrator_MySQL extends AbstractController {
             '(id int not null primary key auto_increment, name varchar(255), unique key(name), status enum("ok","fail"))',
             ['table'=>'_db_update'])->execute();
 
-        // todo - sort files in folders
         foreach($folders as $dir){
 
             $files = scandir($dir);
@@ -32,7 +31,9 @@ class Controller_Migrator_MySQL extends AbstractController {
 
                 if($q->getOne()==='ok')continue;
 
-                $migration=file_get_contents($dir.'/'.$name);
+                echo "migrating $name...\n";
+
+                $migration=file_get_contents($filename);
 
                 $q->set('name',strtolower($name));
                 try {

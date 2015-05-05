@@ -1,7 +1,7 @@
 <?php
 namespace dokku_alt;
 class Model_Host extends \SQL_Model {
-    public $table='host';
+    public $table='dam_host';
 
     function init(){
         parent::init();
@@ -10,6 +10,8 @@ class Model_Host extends \SQL_Model {
         $this->addField('addr')->mandatory(true);
         $this->addField('public_key')->type('text');
         $this->addField('private_key')->type('text')->visible(false);
+
+        $this->addField('dokku_version')->system(true);
 
         $this->addField('notes')->type('text');
 
@@ -93,7 +95,7 @@ class Model_Host extends \SQL_Model {
      */
     function syncApps()
     {
-        $apps =  explode("\n",$this->executeCommand('apps:list'));
+        $apps =  explode("\n",trim($this->executeCommand('apps:list')));
 
         $m_app = $this->ref('App');
 
@@ -110,7 +112,10 @@ class Model_Host extends \SQL_Model {
         }
     }
 
-    function test(){
-        return $this->executeCommand('version');
+    function updateVersion(){
+        $version = $this->executeCommand('version');
+        $this['dokku_version'] = $version;
+        $this->saveLater();
+        return $version;
     }
 }

@@ -1,7 +1,8 @@
 <?php
 namespace dokku_alt;
-class Model_Access extends  \SQL_Model {
+class Model_Access extends Model_Abstract {
     public $table='access';
+    public $title_field = 'fingerprint';
 
     function init()
     {
