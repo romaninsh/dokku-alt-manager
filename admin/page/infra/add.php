@@ -2,7 +2,7 @@
 /**
  * Page class
  */
-class page_add extends Page
+class page_infra_add extends Page
 {
     public $title='Add Host';
 
@@ -26,7 +26,7 @@ class page_add extends Page
         $form->getElement('addr')->setFieldHint('mysite.example.com');
         $form->getElement('private_key')->setFieldHint('If you leave this field empty, the application will find appropriate key in Keychain');
         $form->addSubmit('Continue');
-        $form->addButton('Back')->link($this->app->url('/'));
+        $form->addButton('Back')->link($this->app->url('infra'));
 
         $form->onSubmit(function($f){
             $f->update();

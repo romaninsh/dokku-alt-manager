@@ -8,7 +8,10 @@
         }
     },
     "require": {
-        "atk4/atk4": "4.3.*@dev",
+        "atk4/atk4": "dev-master",
+        "erusev/parsedown": "dev-master",
+        "romaninsh/mdcms": "dev-master",
+        "roderik/pwgen-php": "dev-master",
         "phpseclib/phpseclib": "0.3.*@dev"
     },
     "extra": {

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8"/>
+</head>
+<body>
+<h1 id="dokkualtmanager">Dokku Alt Manager</h1>
+
+<p>Using Dokku Alt Manager you can significantly simplify your web app development
+and management lifecycle and also do many other interesting things. This
+application takes Dokku-alt to a next level by adding:</p>
+
+<ul>
+<li>Extensive Web UI interface for managing your infrastructure</li>
+<li>API for Github Hooks to push updates to your containers</li>
+<li>Application management</li>
+<li>Rest API to integrate inside your applications</li>
+</ul>
+
+<h2 id="gettingstarted">Getting Started</h2>
+
+<p>You will need at least one Ubuntu box to get started. Install
+dokku-alt on your box, then under &#8220;Infrastructure &gt; Hosts&#8221; set up
+your new box.</p>
+
+<p>If you have enabled this interface through &#8220;dokku manager:enable&#8221;, then
+this host will already be added for you.</p>
+
+<p>Proceed to &#8220;Sync&#8221; your host, which will look for applications that you
+might already have installed directly through command-line interface and
+create local cache for them.</p>
+
+<h3 id="defineapplications">Define Applications</h3>
+
+<p>You will want to define different types of applications on your dokku-alt
+host. By default I included &#8220;wordpress&#8221;. To add a new type, you&#8217;ll need
+to specify URL for the application repository.</p>
+
+<p>You may then deploy this application to one or several hosts. Application
+also allow you to define necessary dependencies for your application such
+as database link, volume. Those will be automatically created for your
+application as you deploy them.</p>
+
+<h2 id="security">Security</h2>
+
+<p>Dokku-alt-manager relies on MariaDB database to store your infrastructure
+configuration and private keys. For security purposes you may want to
+enable &#8220;packing key&#8221;. This will add pass-key encryption to all the private
+keys but you will have to enter this packing key every time you log into
+your management interface. Packing key will not be stored in the database.</p>
+
+<h2 id="config">Config</h2>
+
+<p>Dokku-alt-manager now has a system-wide config page, which allows you
+to enable or disable certain features. For example you can enable &#8220;Rest API&#8221;
+there. See &#8220;Documentation&#8221; section on how to use Rest API for your custom
+infrastructure management.</p>
+
+<p>Additionally you may want to enable Github push-hook support. You will
+have to configure GitHub with a specified URL, but this will allow your
+applicatinos to be automatically re-deployed when new changes are committed
+into github.</p>
+
+</body>
+</html>

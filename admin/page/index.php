@@ -2,20 +2,13 @@
 
 class page_index extends Page {
 
-    public $title='Dashboard';
+    public $title='Dokku Alt Manager';
 
     function init() {
         parent::init();
-        $this->add('View_Box')
-            ->setHTML('Welcome to Dokku Admin Manager. This application will help you with administration of your Web Site Hosting based around "dokku-alt" project.');
+        $this->app->layout->template->tryDel('has_page_title');
 
-
-        $bs=$this->add('ButtonSet');
-        $bs->addButton('Add New Host')->link($this->app->url('./add'));
-        $bs->addButton('Deploy New App');
-        $bs->addClass('atk-push');
-
-        $this->add('View_ServerList')->setModel('dokku_alt/Host');
+        $this->add('romaninsh/mdcms/View')->set('index');
     }
 
 }

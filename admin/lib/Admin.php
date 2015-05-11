@@ -5,23 +5,45 @@
     public function init()
     {
         parent::init();
-        /*
 
-        $this->api->pathfinder
-            ->addLocation(array(
-                'addons' => array('addons', 'vendor'),
+        $this->app->pathfinder->base_location
+            ->addRelativeLocation('..',array(
+                'md_content' => 'doc'
             ))
-            ->setBasePath($this->pathfinder->base_location->getPath() . '/..')
         ;
-        */
+
+        $this->app->pathfinder->shared_location
+            ->defineContents(['addons'=>'addons/atk4']);
 
         $this->template['css']='compact.css';
 
         $this->dbConnect();
 
-        $this->api->menu->addItem(['Dashboard', 'icon'=>'home'], '/');
-        $this->api->menu->addItem(['Users', 'icon'=>'users'], 'users');
-        $this->api->menu->addItem(['Keys', 'icon'=>'key'], 'keychain');
+
+        if($this->url('dam')->isCurrent(true)){
+
+            $this->api->menu->addItem(['Access', 'icon'=>'users'], 'users');
+            $this->api->menu->addItem(['Applications', 'icon'=>'home'], '/');
+            $this->api->menu->addItem(['Deploy Keys', 'icon'=>'key'], 'keychain');
+            $this->api->menu->addItem(['Dokku-Manager UI', 'icon'=>'mouse'], 'keychain');
+            $this->api->menu->addItem(['Databases', 'icon'=>'database'], 'database');
+            $this->api->menu->addItem(['Volumes', 'icon'=>'drive'], 'disk');
+
+        }elseif($this->url('docs')->isCurrent(true)){
+            $this->api->menu->addItem('Getting Started', 'docs');
+            $this->api->menu->addItem('Rest API', 'docs/restapi');
+        }else{
+            $this->layout->template->tryDel('has_main_menu');
+        }
+
+/*
+        */
+
+
+        $user_menu = $this->layout->add('Menu_Horizontal',null,'User_Menu');
+        $user_menu->addItem(['Logout', 'icon'=>'logout'],'logout');
+
+
 
         $this->add('dokku_alt/Initiator');
 
@@ -34,6 +56,15 @@
             $this->layout->add('View_Error')->set('No user accounts found. Please define them before continuing.');
         }
     }
+
+    function initTopMenu() {
+        $m=$this->layout->add('Menu_Horizontal',null,'Top_Menu');
+        $m->addItem(['Infrastructure', 'icon'=>'network'],'/infra');
+        $m->addItem(['Applications', 'icon'=>'box-1'],'/apps');
+        $m->addItem(['Configuration', 'icon'=>'cog'],'/config');
+        $m->addItem(['Documentation', 'icon'=>'book'],'/docs');
+    }
+
 
     /**
      * Packing key is a passphrase for your keychain. It helps you to unlock

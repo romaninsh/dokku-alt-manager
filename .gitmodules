@@ -1,0 +1,3 @@
+[submodule "shared/addons/atk4"]
+	path = shared/addons/atk4
+	url = https://github.com/atk4/atk4-addons.git

@@ -1,23 +1,24 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
+        "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "This file is @generated automatically"
     ],
-    "hash": "bd3448950b1c0d1af1c6bdbdc6bd225f",
+    "hash": "9f4c28a88770ed324dc010419dfbe5b5",
     "packages": [
         {
             "name": "atk4/atk4",
-            "version": "4.3.x-dev",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/atk4/atk4.git",
-                "reference": "origin/4.3"
+                "reference": "7ca3aff5311c4fc15fd53e048d5da65f09b20594"
             },
             "dist": {
                 "type": "zip",
-                "url": "http://agiletoolkit.org/distfiles/agiletoolkit-4.2.4.zip",
-                "reference": null,
-                "shasum": null
+                "url": "https://api.github.com/repos/atk4/atk4/zipball/7ca3aff5311c4fc15fd53e048d5da65f09b20594",
+                "reference": "7ca3aff5311c4fc15fd53e048d5da65f09b20594",
+                "shasum": ""
             },
             "type": "library",
             "autoload": {
@@ -29,12 +30,54 @@
                 ]
             },
             "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
             "homepage": "https://agiletoolkit.org/",
             "keywords": [
                 "atk4",
                 "framework"
             ],
-            "time": "2014-11-03 03:09:22"
+            "time": "2015-05-09 18:10:04"
+        },
+        {
+            "name": "erusev/parsedown",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/erusev/parsedown.git",
+                "reference": "b9e5228e92e5f5c17d7774cfb2de8e5e8362de1a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/erusev/parsedown/zipball/b9e5228e92e5f5c17d7774cfb2de8e5e8362de1a",
+                "reference": "b9e5228e92e5f5c17d7774cfb2de8e5e8362de1a",
+                "shasum": ""
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Parsedown": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Emanuil Rusev",
+                    "email": "hello@erusev.com",
+                    "homepage": "http://erusev.com"
+                }
+            ],
+            "description": "Parser for Markdown.",
+            "homepage": "http://parsedown.org",
+            "keywords": [
+                "markdown",
+                "parser"
+            ],
+            "time": "2015-04-29 20:22:24"
         },
         {
             "name": "phpseclib/phpseclib",
@@ -51,7 +94,7 @@
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.0.0"
+                "php": ">=5.3.3"
             },
             "require-dev": {
                 "phing/phing": "2.7.*",
@@ -133,6 +176,91 @@
                 "x509"
             ],
             "time": "2014-11-10 03:08:59"
+        },
+        {
+            "name": "roderik/pwgen-php",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/roderik/pwgen-php.git",
+                "reference": "551d48f91704921063af38f1803f9c5e9e624004"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/roderik/pwgen-php/zipball/551d48f91704921063af38f1803f9c5e9e624004",
+                "reference": "551d48f91704921063af38f1803f9c5e9e624004",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.3"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "PWGen": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL"
+            ],
+            "authors": [
+                {
+                    "name": "Theodore Ts'o",
+                    "email": "tytso@alum.mit.edu"
+                },
+                {
+                    "name": "Superwayne",
+                    "email": "superwayne@superwayne.org"
+                }
+            ],
+            "description": "pwgen-php is a simple PHP class which aims to clone the GNU pwgen functionality.",
+            "keywords": [
+                "generator",
+                "password"
+            ],
+            "time": "2012-09-26 13:12:57"
+        },
+        {
+            "name": "romaninsh/mdcms",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/romaninsh/mdcms.git",
+                "reference": "origin/master"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/romaninsh/mdcms/zipball/7c1d03d93ce296a3ee71733bbb539817d0c439e5",
+                "reference": "7c1d03d93ce296a3ee71733bbb539817d0c439e5",
+                "shasum": ""
+            },
+            "require": {
+                "erusev/parsedown": "dev-master",
+                "php": ">=5.3"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "romaninsh\\mdcms": "lib"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "AGPL"
+            ],
+            "authors": [
+                {
+                    "name": "Romans Malinovskis",
+                    "email": "romans@agiletoolkit.org"
+                }
+            ],
+            "description": "Markdown CMS for Agile Toolkit",
+            "homepage": "http://github.com/romaninsh/mdcms",
+            "keywords": [
+                "atk4"
+            ],
+            "time": "2014-04-02 00:18:18"
         }
     ],
     "packages-dev": [],
@@ -140,8 +268,13 @@
     "minimum-stability": "stable",
     "stability-flags": {
         "atk4/atk4": 20,
+        "erusev/parsedown": 20,
+        "romaninsh/mdcms": 20,
+        "roderik/pwgen-php": 20,
         "phpseclib/phpseclib": 20
     },
+    "prefer-stable": false,
+    "prefer-lowest": false,
     "platform": [],
     "platform-dev": []
 }
