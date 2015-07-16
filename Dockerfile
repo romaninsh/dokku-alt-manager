@@ -18,7 +18,7 @@ RUN apt-get update && \
 
 RUN sed -i "s/variables_order.*/variables_order = \"EGPCS\"/g" /etc/php5/apache2/php.ini
 RUN sed -i "s/variables_order.*/variables_order = \"EGPCS\"/g" /etc/php5/cli/php.ini
-RUN sed -i "s/# StrictHostKeyChecking ask\n StrictHostKeyChecking no/g" /etc/ssh/ssh_config
+RUN sed -i "s/# StrictHostKeyChecking ask/ StrictHostKeyChecking no/g" /etc/ssh/ssh_config
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 RUN a2enmod rewrite
