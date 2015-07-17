@@ -3,6 +3,8 @@ namespace dokku_alt;
 class Model_Host extends \SQL_Model {
     public $table='host';
 
+    public $packet_handler = null;
+
     function init(){
         parent::init();
 
@@ -18,6 +20,8 @@ class Model_Host extends \SQL_Model {
         $this->hasMany('dokku_alt/DB',null,null,'DB');
         $this->hasMany('dokku_alt/Access_Admin',null,null,'Access');
 
+        $this->addField('last_synced');
+
         $this->addField('is_debug')->type('boolean');
     }
     function connect(){
@@ -27,7 +31,7 @@ class Model_Host extends \SQL_Model {
             $key=$this->getPrivateKey();
 
             if (!$ssh->login($this['ssh_user'] ? : 'dokku', $key)) {
-                throw $this->exception('Login Failed!');
+                throw $this->exception('Login Failed!','Exception_ForUser');
             }
             return $ssh;
         } catch (BaseException $e) {
@@ -58,7 +62,7 @@ class Model_Host extends \SQL_Model {
         return $key;
     }
 
-    function executeCommand($command, $args = []) {
+    function executeCommand($command, $args = [], \View_Console $c=null) {
         $this->ref('Host_Log')
             ->set('line',$command.' '.join(' ',$args))
             ->saveAndUnload();
@@ -68,7 +72,7 @@ class Model_Host extends \SQL_Model {
         $ssh=$this->connect();
         // must escape
         ///$args = array_map('escapeshellarg',$args);
-        return trim($ssh->exec($command.' '.join(' ',$args)));
+        return trim($ssh->exec($command.' '.join(' ',$args),$this->packet_handler ?: ($c?function($str)use($c){$c->out($str);}:null)));
     }
 
     function executeCommandSTDIN($command, $stdin, $args = []) {
@@ -88,10 +92,21 @@ class Model_Host extends \SQL_Model {
     }
 
     /**
-     * This will retrieve list of application from the server and then add
-     * them locally.
+     * This will attempt to retrieve all information from your host and
+     * store it locally.
      */
-    function syncApps()
+    function sync(\View_Console $c=null){
+
+        if($c)$c->out('Syncing applications');
+        $this->syncApps($c);
+
+        if($c)$c->out('Syncing complete');
+
+        $this['last_synced']=$this->dsql()->expr('now()');
+        $this->saveLater();
+    }
+
+    function syncApps(\View_Console $c=null)
     {
         $apps =  explode("\n",$this->executeCommand('apps:list'));
 
@@ -100,12 +115,11 @@ class Model_Host extends \SQL_Model {
 
         foreach($apps as $app){
             $m_app -> tryLoadBy('name',$app);
-
-            if(!$m_app['url']){
-                $m_app['url'] = $this->executeCommand('url',[$app]);
-            }
-
             $m_app['name'] = $app;
+
+            //$m_app->sync($c);
+
+
             $m_app->saveAndUnload();
         }
     }

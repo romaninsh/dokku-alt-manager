@@ -57,6 +57,18 @@ class page_hosts extends Page
 
 
         $bs = $this->add('ButtonSet')->addClass('atk-push atk-box-small');
+
+
+
+        $bs->addButton('Sync (synced: '.
+            ($this->model['last_synced']?$this->add('misc/Controller_Fancy')->fancy_datetime($this->model['last_synced']):'never').
+            ')')
+            ->addClass('atk-swatch-blue')
+            ->js('click')
+            ->univ()
+            ->frameURL('Syncing everything on '.$this->model['name'],$this->app->url('./sync'));
+
+
         $bs->addButton('Edit Details')
             ->js('click')
             ->univ()
@@ -161,6 +173,14 @@ class page_hosts extends Page
         $this->model->load($this->app->stickyGet('host_id'));
         $this->add('View')->set($this->model->executeCommand('version'));
     }
+
+    function page_details_sync()
+    {
+        $this->add('View_Console')->set(function($c){
+            $this->model->sync($c);
+        });
+    }
+
     function page_details_plugins()
     {
         $this->model->load($this->app->stickyGet('host_id'));

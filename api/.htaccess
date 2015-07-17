@@ -1,0 +1,12 @@
+
+allow from all
+#Redirect / http://hubculture.com/ven/
+
+# Allows you to use urls like: http://example.com/user/details?id=123
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteRule ^[^\.]*$   index.php   [L]
+    #    RewriteBase /
+</IfModule>

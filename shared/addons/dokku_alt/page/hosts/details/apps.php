@@ -35,6 +35,16 @@ class page_hosts_details_apps extends Page
 */
 
         $bs = $this->add('ButtonSet')->addClass('atk-push atk-box-small');
+
+        $bs->addButton('Sync (synced: '.
+            ($this->model['last_synced']?$this->add('misc/Controller_Fancy')->fancy_datetime($this->model['last_synced']):'never').
+            ')')
+            ->addClass('atk-swatch-blue')
+            ->js('click')
+            ->univ()
+            ->frameURL('Syncing everything on '.$this->model['name'],$this->app->url('./sync'));
+
+
         if($this->model['url'])$bs->addButton('Open')
             ->setElement('a')
             ->setAttr('href', $this->model['url'])
@@ -48,10 +58,10 @@ class page_hosts_details_apps extends Page
                 ->js('click')->univ()->dialogURL('Upgrading from Repository',$this->app->url('./upgrade'));
         }
 
-        $bs->addButton('Edit Details')
+        $bs->addButton('Details')
             ->js('click')
             ->univ()
-            ->dialogURL('Edit Details for '.$this->model['name'],$this->app->url('./edit'));
+            ->dialogURL('Details for '.$this->model['name'],$this->app->url('./edit'));
 
         $bs->addButton('Process Top')
             ->js('click')
@@ -74,7 +84,9 @@ class page_hosts_details_apps extends Page
 
         //$cr_app->setModel($this->model->ref('App'));
         //$cr_app->grid->addFormatter('name','link', ['page'=>'./app','id_field'=>'app_id']);
-        $c1->add('CRUD')->setModel($this->model->ref('DB_Link'));
+        $cr=$c1->add('CRUD');
+        $cr->setModel($this->model->ref('DB_Link'));
+        $cr->addAction('sync');
 
         $c1->add('CRUD')->setModel($this->model->ref('Domain'));
 
@@ -90,6 +102,13 @@ class page_hosts_details_apps extends Page
     {
         $this->model->pullPush();
         $this->add('View')->setElement('pre')->set($this->model['last_build']);
+    }
+
+    function page_sync()
+    {
+        $this->add('View_Console')->set(function($c){
+            $this->model->sync($c);
+        });
     }
 
     function page_edit()
@@ -111,6 +130,9 @@ class page_hosts_details_apps extends Page
     }
     function page_rebuild(){
         $plugin = $this->add('Model');
-        $this->add('View')->setElement('pre')->set($this->m_host->executeCommand('rebuild', [$this->model['name']]));
+        $this->add('View_Console')->set(function($m){
+            $this->m_host->packet_handler=function($str)use($m){ $m->out($str); };
+            $this->m_host->executeCommand('rebuild', [$this->model['name']]);
+        });
     }
 }

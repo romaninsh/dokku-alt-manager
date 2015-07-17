@@ -14,6 +14,8 @@ class Model_App extends  \SQL_Model {
         //$this->addField('is_started')->type('boolean');
         //$this->addField('is_enabled')->type('boolean')->defaultValue(true);
 
+        $this->addField('last_synced');
+
         $this->hasMany('dokku_alt/Config',null,null,'Config');
         $this->hasMany('dokku_alt/Domain',null,null,'Domain');
         $this->hasMany('dokku_alt/DB_Link',null,null,'DB_Link');
@@ -22,6 +24,28 @@ class Model_App extends  \SQL_Model {
         // TODO move keychain into dokku_alt module, due to multiple dependencies
         $this->hasOne('Keychain');
         $this->addField('repository');
+    }
+
+    function sync(\View_Console $c=null){
+
+        // First lets get basic info about the app
+        if($c)$c->out('Updating URL for '.$this['name']);
+
+        $this['url'] = $q=$this->ref('host_id')->executeCommand('url',[$this['name']]);
+
+        // Now lets get domains
+        $m_dom = $this->ref('Domain','model');
+        $m_dom->sync($c);
+
+        $m_dom = $this->ref('Config','model');
+        $m_dom->sync($c);
+
+        $m_dom = $this->ref('DB_link','model');
+        $m_dom->sync($c);
+
+        if($c)$c->out('Synced '.$this['name']);
+        $this['last_synced']=$this->dsql()->expr('now()');
+        $this->saveLater();
     }
 
     function discover(){
