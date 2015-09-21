@@ -19,6 +19,8 @@
 
         $this->dbConnect();
 
+        $this->add('MDCms');
+
         $this->api->menu->addItem(['Dashboard', 'icon'=>'home'], '/');
         $this->api->menu->addItem(['Users', 'icon'=>'users'], 'users');
         $this->api->menu->addItem(['Keys', 'icon'=>'key'], 'keychain');
