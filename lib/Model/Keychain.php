@@ -13,6 +13,7 @@ class Model_Keychain extends SQL_Model {
         $this->addField('data')->type('text');
 
         $this->addField('is_secure')->type('boolean')->editable(false)
+            ->caption('Packing Key Enabled')
             ->hint('Will use your current passkey to encrypt');
 
         $this->hasOne('User')->defaultValue($this->app->auth->model->id);

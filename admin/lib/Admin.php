@@ -19,6 +19,8 @@
 
         $this->dbConnect();
 
+        $this->add('MDCms');
+
         $this->api->menu->addItem(['Dashboard', 'icon'=>'home'], '/');
         $this->api->menu->addItem(['Users', 'icon'=>'users'], 'users');
         $this->api->menu->addItem(['Keys', 'icon'=>'key'], 'keychain');
@@ -34,6 +36,36 @@
             $this->layout->add('View_Error')->set('No user accounts found. Please define them before continuing.');
         }
     }
+
+    function initTopMenu() {
+        $m=$this->layout->add('Menu_Horizontal',null,'Top_Menu');
+        $m->addItem(['Infrastructure', 'icon'=>'network'],'/infra');
+        $m->addItem(['Applications', 'icon'=>'box-1'],'/apps');
+        $m->addItem(['Configuration', 'icon'=>'cog'],'/config');
+        $m->addItem(['Documentation', 'icon'=>'book'],'/docs');
+    }
+
+    /**
+     * TODO: do more tests
+     * @param  [type] $e [description]
+     * @return [type]    [description]
+     */
+    function caughtException($e) {
+        if($e instanceof Exception_ForUser){
+            if($_GET['cut_page']){
+                $this->js(true)->univ()->errorMessage($e->getText());//->execute();
+                $this->render();
+                exit;
+            }
+
+            // Possibly need to execute
+            $this->js(true)->univ()->errorMessage($e->getText())->execute();
+            $this->render();
+            exit;
+        }
+        return parent::caughtException($e);
+    }
+
 
     /**
      * Packing key is a passphrase for your keychain. It helps you to unlock

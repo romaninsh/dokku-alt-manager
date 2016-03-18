@@ -1,0 +1,3 @@
+[submodule "shared/addons/romaninsh/mdcms"]
+	path = shared/addons/romaninsh/mdcms
+	url = git@github.com:romaninsh/mdcms.git
